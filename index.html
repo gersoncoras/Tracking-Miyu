@@ -693,17 +693,15 @@ async function descargarPDF() {
 
 
 
-    /* =====================================
-       CENTRAR ETIQUETA EN A4
-       ===================================== */
+ /* =====================================
+   POSICIÓN DE LA ETIQUETA EN A4
+   ===================================== */
 
-    const x =
-        (pageW - boxW) / 2;
+// 5 mm desde el borde izquierdo
+const x = 5;
 
-
-    const y =
-        (pageH - boxH) / 2;
-
+// Centrada verticalmente
+const y = (pageH - boxH) / 2;
 
 
     /* =====================================
