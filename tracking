@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Generador de Etiquetas - Miyu Studio</title>
+
+<!-- Fuente Acumin desde Adobe Fonts -->
+<link rel="stylesheet" href="https://use.typekit.net/cvj7lhi.css">
+
+<!-- Librerías para generar PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+
+/* =========================================
+   FUENTE MIOGE
+   ========================================= */
+
+/*
+Aquí debes mantener la configuración de tu fuente Mioge
+que ya tienes funcionando.
+
+Ejemplo:
+
+@font-face {
+    font-family: "Mioge";
+    src: url("TU-FUENTE-MIOGE.ttf") format("truetype");
+}
+*/
+
+
+/* =========================================
+   GENERAL
+   ========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "acumin-variable", Arial, sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+
+/* =========================================
+   CONTENEDOR PRINCIPAL
+   ========================================= */
+
+.main-container {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+
+/* =========================================
+   FORMULARIO
+   ========================================= */
+
+form {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-title {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: -8px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 10px;
+    font-family: "acumin-variable", Arial, sans-serif;
+    font-size: 15px;
+    border: 1px solid #999;
+    border-radius: 7px;
+    background: white;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 70px;
+}
+
+
+/* =========================================
+   BOTONES
+   ========================================= */
+
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #111;
+    color: white;
+    font-family: "acumin-variable", Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #333;
+}
+
+
+/* =========================================
+   ETIQUETA
+   TAMAÑO REAL 9 x 9 CM
+   ========================================= */
+
+.label-box {
+    width: 9cm;
+    height: 9cm;
+
+    position: relative;
+
+    background: white;
+
+    border: 2px solid black;
+    border-radius: 18px;
+
+    padding: 16px 18px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 9px;
+
+    overflow: hidden;
+}
+
+
+/* =========================================
+   TITULO
+   ========================================= */
+
+.title-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin-top: 2px;
+}
+
+
+/* MIYU */
+
+.miyu {
+    font-family: "Mioge", serif;
+
+    font-size: 40px;
+    font-weight: 600;
+
+    line-height: 0.9;
+
+    letter-spacing: 4px;
+
+    text-align: center;
+}
+
+
+/* STUDIO */
+
+.studio {
+    font-family: "acumin-variable", Arial, sans-serif;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    letter-spacing: 3px;
+
+    text-align: center;
+
+    margin-top: 2px;
+}
+
+
+/* =========================================
+   LINEA SEPARADORA
+   ========================================= */
+
+.separator {
+    width: 100%;
+
+    border-bottom: 1.5px solid black;
+
+    margin: 4px 0 5px 0;
+}
+
+
+/* =========================================
+   FILAS DE INFORMACION
+   ========================================= */
+
+.row {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 7px;
+
+    width: 100%;
+
+    font-family: "acumin-variable", Arial, sans-serif;
+}
+
+
+/* ETIQUETAS */
+
+.label {
+    flex-shrink: 0;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+
+/* VALORES */
+
+.value {
+    font-size: 16px;
+
+    font-weight: 400;
+
+    line-height: 1.2;
+
+    word-break: break-word;
+
+    flex: 1;
+}
+
+
+/* =========================================
+   FECHA ABAJO A LA DERECHA
+   ========================================= */
+
+.fecha-envio {
+    position: absolute;
+
+    right: 16px;
+    bottom: 12px;
+
+    font-family: "acumin-variable", Arial, sans-serif;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    text-align: right;
+
+    opacity: 0.75;
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 800px) {
+
+    body {
+        padding: 20px;
+    }
+
+    .main-container {
+        justify-content: center;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="main-container">
+
+
+    <!-- =====================================
+         FORMULARIO
+         ===================================== -->
+
+    <form id="dataForm">
+
+        <h2 class="form-title">
+            Generador de Etiqueta
+        </h2>
+
+
+        <label for="distrito">
+            Distrito
+        </label>
+
+        <input
+            type="text"
+            id="distrito"
+            placeholder="Ej: San Martín de Porres"
+        >
+
+
+        <label for="direccion">
+            Dirección
+        </label>
+
+        <input
+            type="text"
+            id="direccion"
+            placeholder="Ej: San Orlando 946"
+        >
+
+
+        <label for="recibe">
+            Nombre
+        </label>
+
+        <input
+            type="text"
+            id="recibe"
+            placeholder="Nombre del cliente"
+        >
+
+
+        <label for="celular">
+            Celular
+        </label>
+
+        <input
+            type="text"
+            id="celular"
+            placeholder="Ej: 990958896"
+        >
+
+
+        <label for="referencia">
+            Comentario
+        </label>
+
+        <textarea
+            id="referencia"
+            placeholder="Referencia o comentario"
+        ></textarea>
+
+
+        <label for="fecha_envio">
+            Fecha de envío
+        </label>
+
+        <input
+            type="date"
+            id="fecha_envio"
+        >
+
+
+        <!-- BOTON GENERAR -->
+
+        <button
+            type="button"
+            onclick="generarEtiqueta()"
+        >
+            Generar Etiqueta
+        </button>
+
+
+        <!-- BOTON PDF -->
+
+        <button
+            type="button"
+            onclick="descargarPDF()"
+        >
+            Descargar PDF
+        </button>
+
+    </form>
+
+
+
+    <!-- =====================================
+         PREVIEW DE ETIQUETA
+         ===================================== -->
+
+    <div
+        class="label-box"
+        id="preview"
+    >
+
+
+        <!-- TITULO -->
+
+        <div class="title-wrapper">
+
+            <div class="miyu">
+                MIYU
+            </div>
+
+            <div class="studio">
+                STUDIO
+            </div>
+
+        </div>
+
+
+        <!-- SEPARADOR -->
+
+        <div class="separator"></div>
+
+
+        <!-- DISTRITO -->
+
+        <div class="row">
+
+            <span class="label">
+                DISTRITO:
+            </span>
+
+            <span
+                class="value"
+                id="p_distrito"
+            ></span>
+
+        </div>
+
+
+        <!-- DIRECCION -->
+
+        <div class="row">
+
+            <span class="label">
+                DIRECCIÓN:
+            </span>
+
+            <span
+                class="value"
+                id="p_direccion"
+            ></span>
+
+        </div>
+
+
+        <!-- NOMBRE -->
+
+        <div class="row">
+
+            <span class="label">
+                NOMBRE:
+            </span>
+
+            <span
+                class="value"
+                id="p_recibe"
+            ></span>
+
+        </div>
+
+
+        <!-- CELULAR -->
+
+        <div class="row">
+
+            <span class="label">
+                CELULAR:
+            </span>
+
+            <span
+                class="value"
+                id="p_celular"
+            ></span>
+
+        </div>
+
+
+        <!-- COMENTARIO -->
+
+        <div class="row">
+
+            <span class="label">
+                COMENTARIO:
+            </span>
+
+            <span
+                class="value"
+                id="p_referencia"
+            ></span>
+
+        </div>
+
+
+        <!-- FECHA ABAJO A LA DERECHA -->
+
+        <div
+            class="fecha-envio"
+            id="p_fecha_envio"
+        ></div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =====================================
+     JAVASCRIPT
+     ===================================== -->
+
+<script>
+
+
+/* =====================================
+   GENERAR ETIQUETA
+   ===================================== */
+
+function generarEtiqueta() {
+
+    document.getElementById("p_recibe").textContent =
+        document.getElementById("recibe").value;
+
+
+    document.getElementById("p_celular").textContent =
+        document.getElementById("celular").value;
+
+
+    document.getElementById("p_distrito").textContent =
+        document.getElementById("distrito").value;
+
+
+    document.getElementById("p_direccion").textContent =
+        document.getElementById("direccion").value;
+
+
+    document.getElementById("p_referencia").textContent =
+        document.getElementById("referencia").value;
+
+
+
+    /* =====================================
+       FECHA SIN DESFASE DE UN DIA
+       ===================================== */
+
+    const fechaInput =
+        document.getElementById("fecha_envio").value;
+
+
+    if (fechaInput) {
+
+        /*
+        El input date entrega:
+
+        2026-08-22
+
+        Lo dividimos directamente para evitar
+        que JavaScript cambie la fecha por zona horaria.
+        */
+
+        const [yyyy, mm, dd] =
+            fechaInput.split("-");
+
+
+        const formato =
+            `${dd}/${mm}/${yyyy}`;
+
+
+        document.getElementById("p_fecha_envio").textContent =
+            "Envío: " + formato;
+
+    }
+
+    else {
+
+        document.getElementById("p_fecha_envio").textContent =
+            "";
+
+    }
+
+}
+
+
+
+/* =====================================
+   DESCARGAR PDF A4
+   CON ETIQUETA DE 9 x 9 CM
+   ===================================== */
+
+async function descargarPDF() {
+
+    /* Primero actualizar los datos */
+
+    generarEtiqueta();
+
+
+    /* Obtener jsPDF */
+
+    const { jsPDF } =
+        window.jspdf;
+
+
+    /* Obtener la etiqueta */
+
+    const etiqueta =
+        document.getElementById("preview");
+
+
+    /* Esperar un momento para renderizar */
+
+    await new Promise(resolve =>
+        setTimeout(resolve, 200)
+    );
+
+
+    /* Convertir etiqueta a imagen */
+
+    const canvas =
+        await html2canvas(etiqueta, {
+
+            scale: 5,
+
+            useCORS: true,
+
+            backgroundColor: "#ffffff"
+
+        });
+
+
+    /* Convertir canvas a PNG */
+
+    const imgData =
+        canvas.toDataURL("image/png");
+
+
+
+    /* =====================================
+       CREAR PDF A4
+       ===================================== */
+
+    const pdf =
+        new jsPDF({
+
+            orientation: "portrait",
+
+            unit: "mm",
+
+            format: "a4"
+
+        });
+
+
+
+    /* Medidas de la hoja A4 */
+
+    const pageW =
+        pdf.internal.pageSize.getWidth();
+
+
+    const pageH =
+        pdf.internal.pageSize.getHeight();
+
+
+
+    /* =====================================
+       TAMAÑO EXACTO DE LA ETIQUETA
+       9 CM = 90 MM
+       ===================================== */
+
+    const boxW = 90;
+
+    const boxH = 90;
+
+
+
+    /* =====================================
+       CENTRAR ETIQUETA EN A4
+       ===================================== */
+
+    const x =
+        (pageW - boxW) / 2;
+
+
+    const y =
+        (pageH - boxH) / 2;
+
+
+
+    /* =====================================
+       INSERTAR ETIQUETA
+       ===================================== */
+
+    pdf.addImage(
+
+        imgData,
+
+        "PNG",
+
+        x,
+
+        y,
+
+        boxW,
+
+        boxH
+
+    );
+
+
+
+    /* =====================================
+       DESCARGAR
+       ===================================== */
+
+    pdf.save(
+        "etiqueta-miyu-A4.pdf"
+    );
+
+}
+
+</script>
+
+</body>
+</html>
